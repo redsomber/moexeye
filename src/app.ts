@@ -3,6 +3,7 @@ import 'reflect-metadata'
 import 'source-map-support/register'
 
 import { apiThrottler } from '@grammyjs/transformer-throttler'
+import { getCurrentData, getLastData } from '@/controllers/bot'
 import { ignoreOld, sequentialize } from 'grammy-middlewares'
 import { run } from '@grammyjs/runner'
 import attachUser from '@/middlewares/attachUser'
@@ -17,6 +18,7 @@ import sendHelp from '@/handlers/help'
 import startMongo from '@/helpers/startMongo'
 
 const mapData = new Map()
+let manualControl: object
 
 async function runApp() {
   console.log('Starting app...')
@@ -40,6 +42,15 @@ async function runApp() {
     .use(languageMenu)
 
   // Commands
+  bot.command('get', async (ctx) => {
+    manualControl = await getLastData()
+    await ctx.reply('received data')
+  })
+  bot.command('run', (ctx) => {
+    setInterval(async () => {
+      manualControl = await getCurrentData(manualControl)
+    }, 10000)
+  })
   bot.command('show', getTickers)
   bot.command(['help', 'start'], sendHelp)
   bot.command('language', handleLanguage)
