@@ -8,7 +8,7 @@ export class User {
   language!: string
 }
 
-const UserModel = getModelForClass(User)
+export const UserModel = getModelForClass(User)
 
 export function findOrCreateUser(id: number) {
   return UserModel.findOneAndUpdate(

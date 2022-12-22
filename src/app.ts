@@ -2,29 +2,21 @@ import 'module-alias/register'
 import 'reflect-metadata'
 import 'source-map-support/register'
 
-// import { DataModel } from '@/models/Data'
-import { CronJob } from 'cron'
 import { apiThrottler } from '@grammyjs/transformer-throttler'
-import {
-  getCurrentData,
-  getLastData,
-  postLastData,
-  runCron,
-} from '@/controllers/bot'
 import { ignoreOld, sequentialize } from 'grammy-middlewares'
 import { run } from '@grammyjs/runner'
 import attachUser from '@/middlewares/attachUser'
 import bot from '@/helpers/bot'
 import configureI18n from '@/middlewares/configureI18n'
+import getTickers from '@/handlers/tickers'
 import handleLanguage from '@/handlers/language'
 import i18n from '@/helpers/i18n'
 import languageMenu from '@/menus/language'
+import runCron from '@/handlers/cron'
 import sendHelp from '@/handlers/help'
 import startMongo from '@/helpers/startMongo'
 
 const mapData = new Map()
-
-let tempData: object
 
 async function runApp() {
   console.log('Starting app...')
@@ -48,17 +40,7 @@ async function runApp() {
     .use(languageMenu)
 
   // Commands
-  bot.command('get', async (ctx) => {
-    await ctx.reply('data resieved')
-    tempData = await getLastData()
-  })
-  bot.command('log', () => {
-    console.log(tempData)
-  })
-  bot.command('curr', async () => {
-    tempData = await getCurrentData(tempData)
-  })
-  bot.command('post', postLastData)
+  bot.command('show', getTickers)
   bot.command(['help', 'start'], sendHelp)
   bot.command('language', handleLanguage)
 
