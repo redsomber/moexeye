@@ -19,9 +19,9 @@ export default function runCron() {
   })
 
   const startAPI = new CronJob('0/10 0 10-23 * * 1-5', async function () {
-    if (!tempData) return console.log('no data')
-
     const d = new Date()
+    if (!tempData) return console.log('no data', d)
+
     tempData = await getCurrentData(tempData)
     console.log('Res:', d)
   })
