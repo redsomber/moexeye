@@ -7,6 +7,7 @@ export default function runCron() {
   const lastAPI = new CronJob('0 50 23 * * *', async function () {
     const d = new Date()
     await postLastData()
+    tempData = {}
     console.log('Last data posted:', d)
   })
 
